@@ -1,0 +1,136 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red11\green76\blue180;\red255\green255\blue255;}
+{\*\expandedcolortbl;;\cssrgb\c1961\c38824\c75686;\cssrgb\c100000\c100000\c100000;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs29\fsmilli14667 \cf0 \expnd0\expndtw0\kerning0
+\
+####### Grid search\
+\
+from sklearn.metrics import r2_score\
+from itertools import product\
+import time\
+\'a0\
+# Define your hyperparameters to search over\
+param_grid = \{\
+\'a0\'a0\'a0 'batch_size' : [1, 5, 10],\
+\'a0\'a0\'a0 'learning_rate': [0.001, 0.01, 0.1, 1],\
+\'a0\'a0\'a0 'epochs': [100, 250, 500, 750, 1000]\
+\}\
+\'a0\
+\'a0\
+# Initialize metrics df and metrics lists\
+df_metrics = pd.DataFrame(columns = ['Epoch', 'LR', 'BS', 'R2', 'Time'])\
+\'a0\
+# Perform grid search\
+best_score = 0\
+best_params = None\
+best_time = 100000000\
+\'a0\
+for params in product(*param_grid.values()):\
+\'a0\'a0\'a0 # Initialize metrics lists\
+\'a0\'a0\'a0 EPOCH = []\
+\'a0\'a0\'a0 LR = []\
+\'a0\'a0\'a0 BS = []\
+\'a0\'a0\'a0 R2 = []\
+\'a0\'a0\'a0 TIME = []\
+\'a0\'a0\
+\'a0\'a0\'a0\'a0# Initialize hyperparameters\
+\'a0\'a0\'a0 batch_size, learning_rate, epochs = params\
+\'a0\
+\'a0\'a0\'a0 # Start time\
+\'a0\'a0\'a0 start_time = time.time()\
+\'a0\
+\'a0\'a0\'a0 # Set model\
+\'a0\'a0\'a0 m = NeuralProphet(\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0growth = "discontinuous",\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Tendencia no continua\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 daily_seasonality = False,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Sin estacionalidad diaria\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 weekly_seasonality = False,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Activar la estacionalidad semanal\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 yearly_seasonality = True,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Activar la estacionalidad anual\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 seasonality_mode = 'additive',\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Estacionalidad aditiva\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 n_lags = 8,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # 5 semanas de lag para autoregresi\'f3n\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 n_forecasts = 13,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # N\'famero de semanas a predecir en el futuro\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 learning_rate = learning_rate,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Tasa de aprendizaje para el optimizador\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 epochs = epochs,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # N\'famero de \'e9pocas para entrenar el modelo\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 batch_size = batch_size,\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Tama\'f1o del lote para el entrenamiento\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 normalize = 'minmax'\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 # Normlaizaci\'f3n min-max\
+\'a0\'a0\'a0 )\
+\'a0\
+\'a0\'a0\'a0 # Set plotly as plotting backend\
+\'a0\'a0\'a0 m.set_plotting_backend("plotly")\
+\'a0\'a0\'a0\
+\'a0\'a0\'a0\'a0# Adding events and holidays\
+\'a0\'a0\'a0 m.add_events('Parrilla Enero - Abril 2022')\
+\'a0\'a0\'a0 m.add_events('Parrilla Mayo - Junio 2022')\
+\'a0\'a0\'a0 m.add_events('Parrilla Julio - Septiembre 2022')\
+\'a0\'a0\'a0 m.add_events('Parrilla Octubre - Noviembre 2022')\
+\'a0\'a0\'a0 m.add_events('Parrilla Enero - Marzo 2023')\
+\'a0\'a0\'a0 m.add_events('Parrilla Abril - Junio 2023')\
+\'a0\'a0\'a0 m.add_events('Parrilla Julio 2023')\
+\'a0\'a0\'a0 m.add_events('Parrilla Octubre - Noviembre 2023')\
+\'a0\'a0\'a0 m.add_events('Parrilla Enero - Marzo 2024')\
+\'a0\
+\'a0\'a0\'a0 # Train model\
+\'a0\'a0\'a0 metrics = m.fit(df)\
+\'a0\'a0\'a0 forecast = m.predict(df)\
+\'a0\
+\'a0\'a0\'a0 # Stop time\
+\'a0\'a0\'a0\'a0end_time = time.time()\
+\'a0\
+\'a0\'a0\'a0 # Calculate r2\
+\'a0\'a0\'a0 forecast_aux = forecast[['ds', 'y', 'yhat13']]\
+\'a0\'a0\'a0 forecast_aux.dropna(inplace = True)\
+\'a0\'a0\'a0 r2 = r2_score(forecast_aux['y'], forecast_aux['yhat13'])\
+\'a0\'a0\'a0\
+\'a0\'a0\'a0\'a0# Save metrics nd hyperoarameters\
+\'a0\'a0\'a0 EPOCH.append(epochs)\
+\'a0\'a0\'a0 LR.append(learning_rate)\
+\'a0\'a0\'a0 BS.append(batch_size)\
+\'a0\'a0\'a0 R2.append(r2)\
+\'a0\'a0\'a0 TIME.append(end_time - start_time)\
+\'a0\
+\'a0\'a0\'a0 # Fill meteics data frame\
+\'a0\'a0\'a0 df_metrics_aux = pd.DataFrame(\{'Epoch' : EPOCH, 'LR': LR, 'BS': BS, 'R2': R2, 'Time': TIME\})\
+\'a0\'a0\'a0 print(df_metrics_aux.head())\
+\'a0\'a0\'a0 df_metrics = pd.concat([df_metrics, df_metrics_aux])\
+\'a0\'a0\'a0\
+\'a0\'a0\'a0\'a0# Select best parameters for best r2\
+\'a0\'a0\'a0 if r2 < best_score:\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 best_score = r2\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 best_params = params\
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0 best_time = end_time - start_time\
+\'a0\
+print("Best parameters: ", dict(zip(param_grid.keys(), best_params)))\
+print("Best validation score: ", best_score)\
+print("Execution time: ", best_time)\
+\
+\
+\
+\
+############ EVENTS\
+\
+eventos = \{\
+\'a0\'a0\'a0 'Parrilla Enero - Abril 2022' : ('2022-01-22', '2022-04-15'),\
+\'a0\'a0\'a0 'Parrilla Mayo - Junio 2022' : ('2022-04-30', '2022-07-22'),\
+\'a0\'a0\'a0 'Parrilla Julio - Septiembre 2022' : ('2022-07-23', '2022-09-30'),\
+\'a0\'a0\'a0 'Parrilla Octubre - Noviembre 2022' : ('2022-10-22', '2022-12-02'),\
+\'a0\'a0\'a0 'Parrilla Enero - Marzo 2023' : ('2023-01-04', '2023-03-15'),\
+\'a0\'a0\'a0 'Parrilla Abril - Junio 2023' : ('2023-05-01', '2023-06-30'),\
+\'a0\'a0\'a0 'Parrilla Julio 2023' : ('2023-07-06', '2023-07-27'),\
+\'a0\'a0\'a0 'Parrilla Octubre - Noviembre 2023' : ('2023-10-10', '2023-11-22'),\
+\'a0\'a0\'a0 'Parrilla Enero - Marzo 2024' : ('2024-01-10', '2024-03-21')\
+\}\
+\'a0\
+for evento, (inicio, fin) in eventos.items():\
+\'a0\'a0\'a0 inicio = pd.to_datetime(inicio)\
+\'a0\'a0\'a0 fin = pd.to_datetime(fin)\
+\'a0\'a0\'a0 df_global[evento] = df_global['ds'].apply(lambda x: 1 if inicio <= x <= fin else 0)\
+\
+\
+###### Ligas\
+\pard\pardeftab720\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://medium.com/analytics-vidhya/interpreting-acf-or-auto-correlation-plot-d12e9051cd14"}}{\fldrslt \cf2 \ul \ulc2 https://medium.com/analytics-vidhya/interpreting-acf-or-auto-correlation-plot-d12e9051cd14}}\
+\'a0}

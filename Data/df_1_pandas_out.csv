@@ -1,0 +1,12 @@
+,ID,NAMES,LASTNAMES,GENDER,GROUP,SALARY,SCORE,SALARY_NOTES,LASTNAMES_1,LASTNAMES_2,FULLNAMES
+0,1001,Federico,Lorca Suárez,M,1,1500.0,9.0,NOT COOL,Lorca,Suárez,Federico Lorca Suárez
+1,1002,María,Machado Ruiz,F,1,1725.5,8.7,NOT COOL,Machado,Ruiz,María Machado Ruiz
+2,1003,José,Pérez Durand,M,3,3000.75,10.0,NICE,Pérez,Durand,José Pérez Durand
+3,1004,Daniela,García Jiménez,F,3,5000.0,5.7,NICE,García,Jiménez,Daniela García Jiménez
+4,1005,Santiago,Vargas Pérez,M,3,4000.0,7.0,NICE,Vargas,Pérez,Santiago Vargas Pérez
+5,1006,Sofía,González Jones,F,4,1225.25,10.0,NOT COOL,González,Jones,Sofía González Jones
+6,1007,Mario,Quiroga Vázquez,M,4,5000.5,2.0,NICE,Quiroga,Vázquez,Mario Quiroga Vázquez
+7,1008,Sofía,Galván Velázquez,F,1,5000.75,8.6,NICE,Galván,Velázquez,Sofía Galván Velázquez
+8,1009,Claudio,Ecutia Lechuga,M,4,500.0,6.0,NOT COOL,Ecutia,Lechuga,Claudio Ecutia Lechuga
+9,1010,Renata,Orozco Santillán,F,2,225.75,9.8,NOT COOL,Orozco,Santillán,Renata Orozco Santillán
+10,1011,Benito,Quevedo Llosa,M,2,6000.0,3.0,NICE,Quevedo,Llosa,Benito Quevedo Llosa
